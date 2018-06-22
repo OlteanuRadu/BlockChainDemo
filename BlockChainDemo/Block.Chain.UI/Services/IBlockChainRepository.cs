@@ -15,4 +15,27 @@ namespace BlockchainAPI.Services
             BsonClassMap.RegisterClassMap<CertificateViewModel>();
         }
     }
+
+
+    public interface ICustomerRepository : IRepository<Customer>
+    {
+    }
+    public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
+    {
+        public CustomerRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
+            //BsonClassMap.RegisterClassMap<CertificateViewModel>();
+        }
+    }
+
+    public interface IShipRepository : IRepository<Ship>
+    {
+    }
+    public class ShipRepository : BaseRepository<Ship>, IShipRepository
+    {
+        public ShipRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
+            //BsonClassMap.RegisterClassMap<CertificateViewModel>();
+        }
+    }
 }

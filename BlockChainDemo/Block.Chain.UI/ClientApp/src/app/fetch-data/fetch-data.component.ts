@@ -19,16 +19,16 @@ export class FetchDataComponent {
     //}, error => console.error(error));
 
     this.route.queryParams.subscribe(_ => {
-      if (_.id != undefined) {
+      if (_.username != undefined) {
         this.Title = "My Certificates";
-        http.get<CertificateModel[]>('https://localhost:44388/api/certificate/'+ JSON.parse(_.id).username).subscribe(result => {
+        http.get<CertificateModel[]>('https://localhost:44388/api/certificate/'+_.username).subscribe(result => {
           this.forecasts = result;
           this.isBusy= false;
         }, error => console.error(error)); 
       }
       else {
         this.Title = "All Certificates";
-        http.get<CertificateModel[]>('api/certificate/').subscribe(result => {
+        http.get<CertificateModel[]>('https://localhost:44388/api/certificate/').subscribe(result => {
            this.forecasts = result;
            this.isBusy = false;
          }, error => console.error(error));

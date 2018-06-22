@@ -1,5 +1,5 @@
 
-<h2>Create Certificate</h2>
+<div style="vertical-align: middle">
 <div class="example-container">
         <!-- <mat-form-field>
                 <textarea matInput placeholder="Client Identifier"></textarea>
@@ -7,13 +7,42 @@
         <mat-form-field>
           <textarea matInput placeholder="Client Identifier"></textarea>
         </mat-form-field>-->
-        <mat-form-field>
-                <textarea matInput placeholder="Client Identifier"></textarea>
-         </mat-form-field>
+        <mat-card>
+            <mat-card-title>Create Certificate</mat-card-title>
+            <mat-card-content>
+              <mat-form-field class="example-full-width">
+                <input [(ngModel)]="selectedCustomer" type="text" placeholder="Customer Name" aria-label="Number" matInput [matAutocomplete]="auto1">
+                <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayCustomer">
+                  <mat-option *ngFor="let customer of customers" [value]="customer">
+                    {{ customer.firstName }} {{ customer.lastName }} 
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                <input  [(ngModel)]="selectedShip" type="text" placeholder="Vessel Name" aria-label="Number" matInput [matAutocomplete]="auto2">
+                <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayShipName">
+                  <mat-option *ngFor="let option of ships" [value]="option">
+                    {{ option.shipName }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <mat-form-field>
+                  <input [(ngModel)]="selectedStartDate" matInput matInput placeholder="Start Date" [matDatepicker]="startDatePicker">
+                  <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker  #startDatePicker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field>
+                  <input  [(ngModel)]="selectedEndDate"matInput matInput placeholder="End Date" [matDatepicker]="endDatePicker">
+                  <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker  #endDatePicker></mat-datepicker>
+              </mat-form-field>
+        </mat-card-content>
+         <mat-card-actions>	
          <button mat-button color="warn" (click)="onClick()">
                 <mat-icon>file_upload</mat-icon>
                 {{text}}
-              </button>
+         </button>
+              </mat-card-actions>
               <br/>
               <ul>
                     <li *ngFor="let file of files" [@fadeInOut]="file.state">
@@ -29,5 +58,9 @@
                       </span>
                     </li>
                   </ul>
-              <input type="file" id="fileUpload" name="fileUpload" multiple="multiple" accept="{{accept}}" style="display:none;" />
+                </mat-card>
       </div>
+      <div>
+        <input type="file" id="fileUpload" name="fileUpload" multiple="multiple" accept="{{accept}}" style="display:none;" />
+      </div>
+    </div>

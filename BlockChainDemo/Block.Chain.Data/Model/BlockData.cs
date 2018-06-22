@@ -1,6 +1,7 @@
 ﻿using Blockchain.Data.Entities;
 using Blockchain.Data.Utils;
 using System;
+using System.Runtime.Serialization;
 
 namespace Blockchain.Data.Model
 {
@@ -18,7 +19,25 @@ namespace Blockchain.Data.Model
         public string CertificateIdentifier { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-
         public byte[] File { get; set; }
+    }
+
+    [CollectionName("Customers")]
+    public class Customer : Entity
+    {
+        [DataMember]
+        public string FirstName { get; set; }
+
+        [DataMember]
+
+        public string LastName { get; set; }
+
+    }
+
+    [CollectionName("Ships")]
+    public class Ship : Entity
+    {
+        [DataMember]
+        public string ShipName { get; set; }
     }
 }

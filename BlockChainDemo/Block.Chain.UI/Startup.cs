@@ -27,6 +27,8 @@ namespace WebApplication7
             services.AddTransient<IBlockChainManager, BlockChainManager<WpfCompositeEvent<object>>>();
             //services.AddTransient<BlockChainCertificateRequestHandler<CertificateRequestControllerEvent<WpfCompositeEvent<object>>>>();
             services.AddSingleton<IBlockChainRepository, BlockChainRepository>();
+            services.AddSingleton<ICustomerRepository, CustomerRepository>();
+            services.AddSingleton<IShipRepository, ShipRepository>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
 
             // In production, the Angular files will be served from this directory
@@ -39,11 +41,11 @@ namespace WebApplication7
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader()
-                    .AllowAnyMethod());
+                    builder => builder.WithOrigins("http://example.com").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

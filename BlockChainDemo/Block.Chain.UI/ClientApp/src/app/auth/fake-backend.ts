@@ -6,7 +6,7 @@ import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        let testUser = { id: 1, username: 'cee2d424-f9de-4b7b-899f-69d963738fbd', password: 'test', firstName: 'Radu', lastName: 'Olteanu' };
+        let testUser = { id: 1, username: 'aabf89ab-19cf-44f5-b915-f752c4c4bc1f', password: 'test', firstName: 'Radu', lastName: 'Olteanu' };
 
         // wrap in delayed observable to simulate server api call
         return of(null).pipe(mergeMap(() => {

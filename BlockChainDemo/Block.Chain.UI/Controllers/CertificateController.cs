@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Blockchain.Data.Model;
 using BlockchainAPI.Events;
 using BlockchainAPI.Services;
 using BlockchainUI.Events;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +17,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlockchainAPI.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("AllowSpecificOrigin")]
     public class CertificateController : Controller
     {
         private IEventAggregator EventAggregator { get; }
         private IBlockChainRepository BlockChainRepo { get; }
+        private ICustomerRepository CustomerRepo { get; }
+        private IShipRepository ShipRepo { get; }
         private IHostingEnvironment Env { get; }
-        public CertificateController(IEventAggregator eventAggregator, IBlockChainRepository blockChainRepo, IHostingEnvironment env)
+        public CertificateController(IEventAggregator eventAggregator,
+                                     IBlockChainRepository blockChainRepo,
+                                     ICustomerRepository customerRepo,
+                                     IShipRepository shipRepo,
+                                     IHostingEnvironment env)
         {
             this.EventAggregator = eventAggregator;
             this.BlockChainRepo = blockChainRepo;
+            this.ShipRepo = shipRepo;
+            this.CustomerRepo = customerRepo;
             this.Env = env;
         }
 
@@ -36,9 +47,10 @@ namespace BlockchainAPI.Controllers
                 .GetEvent<CertificateRequestControllerEvent<object>>()
                 .Publish(new object());
             var items = this.BlockChainRepo.FirstOrDefault().Chain.Select(_ => _.Data).OfType<BlockData>();
-           
+
             return items.Select(_ => new
             {
+                _.Content.Id,
                 _.Content.CustomerIdentifier,
                 _.Content.VesselIdentifier,
                 _.Content.StartDate,
@@ -51,8 +63,9 @@ namespace BlockchainAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IEnumerable<object>> Get(string id)
         {
-           //await Task.Run(() => this.BlockChainRepo.FirstOrDefault().Chain.Where(_ => _.Data.Content.CustomerIdentifier == @"cee2d424-f9de-4b7b-899f-69d963738fbd"));
-           var res =  await Task.Run(() => this.BlockChainRepo.FirstOrDefault().Chain.Select(_ => _.Data).OfType<BlockData>().Select(_ => _.Content).Where(_ => _.CustomerIdentifier == id));
+            var a = this.BlockChainRepo.FirstOrDefault().Chain;
+            //await Task.Run(() => this.BlockChainRepo.FirstOrDefault().Chain.Where(_ => _.Data.Content.CustomerIdentifier == @"cee2d424-f9de-4b7b-899f-69d963738fbd"));
+            var res = await Task.Run(() => this.BlockChainRepo.FirstOrDefault().Chain.Select(_ => _.Data).OfType<BlockData>().Select(_ => _.Content).Where(_ => _.CustomerIdentifier == id));
             return res.Select(_ => new
             {
                 _.CustomerIdentifier,
@@ -85,6 +98,14 @@ namespace BlockchainAPI.Controllers
             return File(matchedFile.LastOrDefault().File, "application/pdf", string.Empty);
         }
 
+        [HttpGet("Customers")]
+        public async Task<IQueryable<Customer>> Customers() =>
+            await Task.Run(() => this.CustomerRepo.AsQueryable());
+
+        [HttpGet("Ships")]
+        public async Task<IQueryable<Ship>> Ships() =>
+            await Task.Run(() => this.ShipRepo.AsQueryable());
+
 
         [HttpPost]
         [Route("validatecertificate")]
@@ -98,18 +119,19 @@ namespace BlockchainAPI.Controllers
         [Route("upload")]
         public async Task<IActionResult> Upload(FileUploadViewModel vm)
         {
-            vm.CustomerIdentifier = @"cee2d424-f9de-4b7b-899f-69d963738fbd";
-
             using (var ms = new MemoryStream())
             {
                 await vm.File.CopyToAsync(ms);
-                this.EventAggregator.GetEvent<UploadDocumentControllerEvent<CertificateViewModel>>().Publish(new CertificateViewModel
+                var entity = new CertificateViewModel
                 {
                     CertificateIdentifier = Guid.NewGuid().ToString(),
                     CustomerIdentifier = vm.CustomerIdentifier,
-                    VesselIdentifier = Guid.NewGuid().ToString(),
+                    VesselIdentifier = vm.VesselIdentifier,
+                    StartDate = vm.StartDate.CustomParse(),
+                    EndDate = vm.EndDate.CustomParse(),
                     File = ms.ToArray()
-                });
+                };
+                this.EventAggregator.GetEvent<UploadDocumentControllerEvent<CertificateViewModel>>().Publish(entity);
             }
 
             return await Task.Run(() => Ok());
@@ -139,6 +161,9 @@ namespace BlockchainAPI.Controllers
     public class FileUploadViewModel
     {
         public string CustomerIdentifier { get; set; }
+        public string VesselIdentifier { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
         public IFormFile File { get; set; }
     }
 
@@ -148,4 +173,17 @@ namespace BlockchainAPI.Controllers
         public string VesselIdentifier { get; set; }
     }
 
+    public static class DateTimeExtensions
+    {
+        public static DateTime CustomParse(this string s)
+        {
+            if (DateTime.TryParseExact(s, "ddd MMM dd yyyy HH:mm:ss 'GMT'K",
+                                      CultureInfo.InvariantCulture,
+                                      DateTimeStyles.None, out DateTime dt))
+            {
+                return dt;
+            }
+            else return DateTime.Now;
+        }
+    }
 }

@@ -31,7 +31,9 @@ export class HomeComponent {
     win.focus();
   }
   public navigateToMyCertificates(): void {
-    this.router.navigate(['/fetch-data'], { queryParams: { id: localStorage.getItem('currentUser') } });
+    var username = JSON.parse(localStorage.getItem('currentUser')).username;
+    //var user = JSON.parse(currentUser.id).username;
+    this.router.navigate(['/fetch-data'], { queryParams: { username: username } });
   }
 
   public navigateToAllCertificates(): void {

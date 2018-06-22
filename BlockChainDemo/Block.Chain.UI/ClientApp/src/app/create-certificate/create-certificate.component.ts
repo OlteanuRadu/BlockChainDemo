@@ -1,5 +1,5 @@
 import { Component, Inject, Input, Output, EventEmitter } from '@angular/core';
-import { HttpClient, HttpRequest, HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpEventType, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { trigger, state, style, animate, transition } from '@angular/animations';
@@ -14,7 +14,13 @@ import { of } from 'rxjs/observable/of';
 
   export class CreateCertificateComponent {
       
-    @Input() text = 'Attach Document';
+    public customers: CustomerViewModel[] = [];
+    public ships:ShipViewModel[] = [];
+    selectedCustomer : CustomerViewModel;
+    selectedShip : ShipViewModel;
+    selectedStartDate: string;
+    selectedEndDate: string;
+  @Input() text = 'Attach Document';
       /** Name used in form which will be sent in HTTP request. */
   @Input() param = 'file';
   /** Target URL for file uploading. */
@@ -24,8 +30,25 @@ import { of } from 'rxjs/observable/of';
   /** Allow you to add handler after its completion. Bubble up response text from remote. */
   @Output() complete = new EventEmitter<string>();
 
+
   private files: Array<FileUploadModel> = [];
-      constructor(private _http: HttpClient, @Inject('BASE_URL') baseUrl: string, private route: ActivatedRoute){}
+
+      constructor(private _http: HttpClient, @Inject('BASE_URL') baseUrl: string, private route: ActivatedRoute){
+        _http.get<CustomerViewModel[]>('https://localhost:44388/api/certificate/customers').subscribe(result => {
+
+          this.customers = result;
+        }, error => console.log(error)); 
+
+        _http.get<ShipViewModel[]>('https://localhost:44388/api/certificate/ships').subscribe(result => {
+          this.ships = result;
+        }, error => console.log(error)); 
+
+      }
+
+      displayShipName = (ship:ShipViewModel) =>`${ship.shipName}`;
+
+      displayCustomer = (state:CustomerViewModel) => 
+          `${state.firstName} ${state.lastName}`;
 
       onClick() {
         const fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
@@ -52,14 +75,20 @@ import { of } from 'rxjs/observable/of';
 
       private uploadFile(file: FileUploadModel) {
         const fd = new FormData();
+        fd.append("CustomerIdentifier",this.selectedCustomer.id);
+        fd.append("VesselIdentifier",this.selectedShip.id);
+        fd.append("StartDate",this.selectedStartDate);
+        fd.append("EndDate",this.selectedEndDate);
         fd.append(this.param, file.data);
-    var objectToSend = {"CustomerIdentifier": 'test', "File":file};
+
         const req = new HttpRequest('POST', this.target, fd, {
-          reportProgress: true
+          reportProgress: true,
         });
-    
+        
+        //this._http.post(this.target,fd);
+        
         file.inProgress = true;
-        file.sub = this._http.request(req).pipe(
+         file.sub = this._http.request(req).pipe(
           map(event => {
             switch (event.type) {
               case HttpEventType.UploadProgress:
@@ -103,4 +132,15 @@ import { of } from 'rxjs/observable/of';
     canRetry: boolean;
     canCancel: boolean;
     sub?: Subscription;
+  }
+
+  export interface CustomerViewModel{
+    firstName:string;
+    id:string;
+    lastName:string;
+  }
+
+  export interface ShipViewModel{
+    shipName:string;
+    id:string;
   }
