@@ -1,0 +1,35 @@
+<main role="main">
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+  <div class="jumbotron">
+    <div class="container">
+      <h2 class="icon">
+          <mat-icon [inline]="true">account_circle</mat-icon>
+          <p>{{currentUser}}</p>
+      </h2>
+      <h1 class="display-3">BlockChain Api Demo</h1>
+      <p> BlockChain Api Demo</p>
+      <div class="is-grouped">
+          <button style="margin-right: 10px" mat-raised-button color="primary" (click)="createCertificate()">Create Certificate</button>
+          <button style="margin-right: 10px" mat-raised-button (click)="navigateToAllTransactions()">View Ledger Transactions
+              <span style="margin-right: 10px" style="margin-bottom: 5px" class="badge">200</span></button>
+        <button style="margin-right: 10px" mat-raised-button (click)="navigateToAllCertificates()">View All Certificates
+            <span style="margin-right: 10px" style="margin-bottom: 5px" class="badge">{{totalCertificates}}</span></button>
+        <button style="margin-right: 10px" mat-raised-button (click)="navigateToMyCertificates()">View My Certificates
+            <span style="margin-right: 10px" style="margin-bottom: 5px" class="badge">1</span>
+        </button>
+        <button style="margin-right: 10px" mat-raised-button (click)="validateCertificate()">Validate Certificate</button>
+        <button style="margin-right: 10px" mat-raised-button (click)="logout()">Logout</button>
+        <!--<a class="btn btn-primary btn-lg" href="#" role="button">Store Certificate</a>
+        <input type="file" />-->
+        </div>
+    </div>
+    <div>
+      <ul>
+        <li *ngFor="let item of certificates">
+          {{item.customerIdentifier}}
+          {{item.blockType}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</main>

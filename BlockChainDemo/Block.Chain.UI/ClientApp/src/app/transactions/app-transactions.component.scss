@@ -1,0 +1,33 @@
+.content{
+    display: inline-block
+}
+
+td {
+    padding-left: 7.5px;
+    padding-right: 7.5px;
+    background-color:transparent;
+    height: 40px;
+    border: 1px transparent;
+    width: 25%;
+  }
+  
+  td:first-child {
+    padding-left: 0;
+  }
+  
+  td:last-child {
+    padding-right: 0;
+  }
+  
+  table {
+    width: calc(100% + 30px);
+    table-layout: fixed;
+    border-spacing: 15px 0px;
+    background:transparent;
+    margin: 0px -15px;
+  }
+
+.mat-elevation-z8{
+    overflow: hidden;
+  margin: 0 auto;
+}

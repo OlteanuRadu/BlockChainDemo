@@ -1,0 +1,15 @@
+/* Added to highlight spacing */
+.is-grouped {   
+    display: inline-block;
+    background-color:transparent
+}
+
+.is-grouped > .button:not(:last-child) {
+    margin-right: 10px;
+}
+.icon{
+    display: inline;
+    position: absolute;
+    right: 60px;
+    top: 5px;
+}

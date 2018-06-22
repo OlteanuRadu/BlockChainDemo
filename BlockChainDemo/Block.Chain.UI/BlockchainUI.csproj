@@ -1,0 +1,91 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Content Remove="$(SpaRoot)**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\src\app\app-material\app-material.module.ts" />
+    <None Remove="ClientApp\src\app\app-routing.module.ts" />
+    <None Remove="ClientApp\src\app\auth\auth.guard.ts" />
+    <None Remove="ClientApp\src\app\auth\auth.service.ts" />
+    <None Remove="ClientApp\src\app\auth\user.ts" />
+    <None Remove="ClientApp\src\app\certificate-validator\certificate-validator.component.ts" />
+    <None Remove="ClientApp\src\app\layouts\home-layout.component.ts" />
+    <None Remove="ClientApp\src\app\layouts\login-layout.component.ts" />
+    <None Remove="ClientApp\src\app\shared\services\base.service.js" />
+    <None Remove="ClientApp\src\app\shared\services\base.service.js" />
+    <None Remove="ClientApp\src\app\shared\services\base.service.js.map" />
+    <None Remove="ClientApp\src\app\shared\services\base.service.js.map" />
+    <None Remove="ClientApp\src\app\shared\services\base.service.ts" />
+    <None Remove="ClientApp\src\app\shared\services\base.service.ts" />
+    <None Remove="ClientApp\src\app\shared\services\user.service.ts" />
+    <None Remove="ClientApp\src\app\shared\services\user.service.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\app-material\app-material.module.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\auth\auth.guard.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\auth\auth.service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\auth\user.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\certificate-validator\certificate-validator.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\layouts\home-layout.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\layouts\login-layout.component.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ClientApp\src\app\shared\services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Block.Chain.Data\Blockchain.Data.csproj" />
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+  </Target>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
+</Project>
