@@ -13,3 +13,27 @@
     right: 60px;
     top: 5px;
 }
+
+$icon-small-container-size: 40px;
+$icon-small-size:40px;
+
+.mat-icon-button.small {
+    margin-left: 60px;
+  width: $icon-small-container-size;
+  height: $icon-small-container-size;
+  color:green;
+  line-height: $icon-small-container-size;
+
+  .mat-icon, .mat-icon-button i {
+    line-height: $icon-small-size;
+  }
+
+  .mat-icon {
+    width: $icon-small-size;
+    height: $icon-small-size;
+  }
+
+  .material-icons {
+    font-size: $icon-small-size;
+  }
+}

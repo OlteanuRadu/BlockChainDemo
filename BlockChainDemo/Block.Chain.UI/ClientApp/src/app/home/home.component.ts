@@ -22,6 +22,10 @@ export class HomeComponent {
     window.open(url);
   }
 
+  public test() : void {
+
+  }
+
   public getAllCertificates = () => this.httpClient
     .get<CertificateModel[]>("api/certificate")
     .subscribe(_ => this.certificates = _);
@@ -54,7 +58,6 @@ export class HomeComponent {
     this.router.navigate(['/login']);
   }
 }
-
 
 export class CertificateModel {
   public customerIdentifier: string;

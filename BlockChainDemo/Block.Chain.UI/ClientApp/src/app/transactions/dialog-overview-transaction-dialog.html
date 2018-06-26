@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Transaction Details for Transaction {{data.result.id}}</h2>
+
+<div class="example-container">
+        <mat-form-field  class="example-full-width">
+          <input  [(ngModel)]="data.result.from" readonly=true matInput placeholder="Source">
+        </mat-form-field>
+      <mat-icon>arrow_right_alt</mat-icon>
+        <mat-form-field class="example-full-width">
+           <input [(ngModel)]="data.result.to" readonly=true matInput placeholder="Target" value="Test">
+        </mat-form-field>
+</div>

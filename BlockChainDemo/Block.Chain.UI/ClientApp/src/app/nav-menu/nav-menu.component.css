@@ -19,6 +19,23 @@ li.link-active a:focus {
     z-index: 1;
 }
 
+
+.example-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .example-events {
+    width: 300px;
+    height: 200px;
+    overflow: auto;
+    border: 1px solid #555;
+  }
+  
+
 @media (min-width: 768px) {
     /* On small screens, convert the nav menu to a vertical sidebar */
     .main-nav {
@@ -56,4 +73,5 @@ li.link-active a:focus {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
 }

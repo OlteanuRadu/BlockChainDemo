@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
 
 
 
@@ -29,14 +30,15 @@ import {map, startWith} from 'rxjs/operators';
   ];
 
     displayedColumns = ['blockType','created','button1'];
-    constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string, private route: ActivatedRoute) {
+    constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string, 
+                private route: ActivatedRoute,private dialog: MatDialog) {
 
         this.stateCtrl = new FormControl();
         this.http = http;
         
         this.route.queryParams.subscribe(_ => {
               this.Title = "Transactions";
-              http.get<TransactionViewModel[]>('https://localhost:44388/api/certificate/Transaction')
+              http.get<TransactionViewModel[]>('api/certificate/Transaction')
                   .subscribe(result => {
                  this.transactions = result;
                  this.isBusy = false;
@@ -70,15 +72,37 @@ import {map, startWith} from 'rxjs/operators';
           state.toLowerCase().indexOf(name.toLowerCase()) === 0);
       }
 
+      public viewTransactionDetails(selectedCertificate :TransactionViewModel): void {
+        let dialogRef = this.dialog.open(TransactionDetailsDialogComponent,{
+          data:{
+            result :selectedCertificate
+          }
+        });
+      }
+
       getTransactionByType(state) : void {
           this.isBusy = true;
-        this.http.get<TransactionViewModel[]>('https://localhost:44388/api/certificate/transaction/'+state).subscribe(result => {
+        this.http.get<TransactionViewModel[]>('api/certificate/transaction/'+state).subscribe(result => {
         this.transactions = result;
         this.isBusy = false;
       }, error => console.error(error));
       }
   }
+
   export class TransactionViewModel{
         public blockType : string;
+        public from: string;
+        public to:string;
         public created : Date
+  }
+
+  @Component({
+    selector: 'dialog-data-example-dialog',
+    templateUrl:'./dialog-overview-transaction-dialog.html',
+    styleUrls: ['./dialog-overview-transaction-dialog.scss']
+  })
+  export class TransactionDetailsDialogComponent {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+
+    }
   }

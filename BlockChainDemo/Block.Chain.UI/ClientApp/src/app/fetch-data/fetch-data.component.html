@@ -1,8 +1,5 @@
 <h1>{{Title}}</h1>
 
-<p>This component demonstrates fetching certificates from the server.</p>
-
-<p *ngIf="!forecasts"><em>Loading...</em></p>
 <mat-spinner *ngIf="isBusy"></mat-spinner>
 
 <table mat-table [dataSource]="forecasts" class="mat-elevation-z8" *ngIf="!isBusy">
@@ -13,7 +10,7 @@
   <!-- Position Column -->
   <ng-container matColumnDef="customerIdentifier">
     <th mat-header-cell *matHeaderCellDef> Customer Identifier </th>
-    <td mat-cell *matCellDef="let element"> {{element.customerIdentifier}} </td>
+    <td mat-cell *matCellDef="let element"> {{element.customerIdentifier}}</td>
   </ng-container>
 
   <!-- Name Column -->

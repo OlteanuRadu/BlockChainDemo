@@ -18,10 +18,10 @@ import { LoginLayoutComponent } from './layouts/login-layout.component';
 import { AuthService } from './auth/auth.service';
 import { AuthGuard } from './auth/auth.guard';
 import { AppMaterialModule } from './app-material/app-material.module';
-import { CertificateValidatorComponent } from './certificate-validator/certificate-validator.component';
+import { CertificateValidatorComponent, FileNameDialogComponent } from './certificate-validator/certificate-validator.component';
 import { fakeBackendProvider } from './auth/fake-backend';
 import { JwtInterceptor } from './auth/jwt.interceptor';
-import { TransactionsComponent } from './transactions/transactions.component';
+import { TransactionsComponent, TransactionDetailsDialogComponent } from './transactions/transactions.component';
 import { CreateCertificateComponent } from './create-certificate/create-certificate.component';
 
 @NgModule({
@@ -34,7 +34,9 @@ import { CreateCertificateComponent } from './create-certificate/create-certific
     FetchDataComponent,
     CertificateValidatorComponent,
     CreateCertificateComponent,
-    TransactionsComponent
+    TransactionsComponent,
+    FileNameDialogComponent,
+    TransactionDetailsDialogComponent
   ],
   imports: [
     AccountModule,
@@ -44,6 +46,7 @@ import { CreateCertificateComponent } from './create-certificate/create-certific
     AppMaterialModule,
     BrowserAnimationsModule
   ],
+  entryComponents :[FileNameDialogComponent,TransactionDetailsDialogComponent],
   providers: [
     AuthService,
     AuthGuard,

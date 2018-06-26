@@ -81,7 +81,11 @@ namespace BlockchainAPI.Controllers
         [HttpGet("transaction")]
         public async Task<IEnumerable<Block>> GetAll()
         {
-            var result = await Task.Run(() => this.BlockChainRepo.FirstOrDefault().Chain);
+            var result = await Task.Run(() => {
+               var bc = this.BlockChainRepo.FirstOrDefault();
+                return bc != null ? bc.Chain : Enumerable.Empty<Block>();
+        });
+           
             return result;
         }
 
@@ -93,7 +97,7 @@ namespace BlockchainAPI.Controllers
         public async Task<IActionResult> Download(string customerIdentifier)
         {
             var matchedFile = await Task.Run(() => this.BlockChainRepo.FirstOrDefault().Chain.Select(_ => _.Data).OfType<BlockData>().Select(_ => _.Content).Where(_ => _.CustomerIdentifier == customerIdentifier));
-            this.EventAggregator.GetEvent<DownloadDocumentControllerEvent<object>>().Publish(new object());
+            this.EventAggregator.GetEvent<DownloadDocumentControllerEvent<IEnumerable<CertificateViewModel>>>().Publish(matchedFile);
 
             return File(matchedFile.LastOrDefault().File, "application/pdf", string.Empty);
         }
@@ -137,6 +141,38 @@ namespace BlockchainAPI.Controllers
             return await Task.Run(() => Ok());
         }
 
+        [HttpPost]
+        [Route("ValidateById")]
+        public async Task<bool> ValidateCertificateById(string certificateId)
+        {
+            var currentDate = DateTime.Now;
+            var res = await Task.Run(() =>
+                                this.BlockChainRepo
+                                    .FirstOrDefault()
+                                    .Chain.Select(_ => _.Data)
+                                    .OfType<BlockData>()
+                                    .Select(_ => _.Content).Any(_ => (_.Id == certificateId) && currentDate >= _.StartDate && currentDate < _.EndDate));
+            this.EventAggregator.GetEvent<ValidateCertificateControllerEvent<string>>().Publish(certificateId);
+
+            return res;
+        }
+
+        [HttpPost]
+        [Route("ValidateByVesselId")]
+
+        public async Task<bool> ValidateByVesselId(string vesselId)
+        {
+            var currentDate = DateTime.Now;
+            var res = await Task.Run(() =>
+                                this.BlockChainRepo
+                                    .FirstOrDefault()
+                                    .Chain.Select(_ => _.Data)
+                                    .OfType<BlockData>()
+                                    .Select(_ => _.Content).Any(_ => (_.VesselIdentifier == vesselId) && currentDate >= _.StartDate && currentDate < _.EndDate));
+            return res;
+
+        }
+
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
@@ -175,15 +211,6 @@ namespace BlockchainAPI.Controllers
 
     public static class DateTimeExtensions
     {
-        public static DateTime CustomParse(this string s)
-        {
-            if (DateTime.TryParseExact(s, "ddd MMM dd yyyy HH:mm:ss 'GMT'K",
-                                      CultureInfo.InvariantCulture,
-                                      DateTimeStyles.None, out DateTime dt))
-            {
-                return dt;
-            }
-            else return DateTime.Now;
-        }
+        public static DateTime CustomParse(this string s) => DateTime.ParseExact(s, "d/M/yyyy", CultureInfo.InvariantCulture);
     }
 }

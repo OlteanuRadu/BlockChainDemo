@@ -1,13 +1,7 @@
 <div class='main-nav'>
   <div class='navbar navbar-inverse'>
     <div class='navbar-header'>
-      <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse' [attr.aria-expanded]='isExpanded' (click)='toggle()'>
-        <span class='sr-only'>Toggle navigation</span>
-        <span class='icon-bar'></span>
-        <span class='icon-bar'></span>
-        <span class='icon-bar'></span>
-      </button>
-      <a class='navbar-brand' [routerLink]='["/"]'>BlockChainApi</a>
+      <a class='navbar-brand' [routerLink]='["/"]'>Block Chain</a>
     </div>
     <div class='clearfix'></div>
     <div class='navbar-collapse collapse' [ngClass]='{ "in": isExpanded }'>
@@ -21,3 +15,18 @@
     </div>
   </div>
 </div>
+
+<!-- <mat-sidenav-container class="example-container">
+    <mat-sidenav #sidenav mode="side" [routerLink]='["/"]' [(opened)]="opened" (opened)="events.push('open!')"
+    (closed)="events.push('close!')">
+Sidenav content
+</mat-sidenav>
+<mat-sidenav-content>
+    <p><mat-checkbox [(ngModel)]="opened">sidenav.opened</mat-checkbox></p>
+    <p><button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button></p>
+    <p>Events:</p>
+    <div class="example-events">
+      <div *ngFor="let e of events">{{e}}</div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>  -->

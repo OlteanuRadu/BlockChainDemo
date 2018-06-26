@@ -18,13 +18,13 @@ import { of } from 'rxjs/observable/of';
     public ships:ShipViewModel[] = [];
     selectedCustomer : CustomerViewModel;
     selectedShip : ShipViewModel;
-    selectedStartDate: string;
-    selectedEndDate: string;
+    selectedStartDate: Date;
+    selectedEndDate: Date;
   @Input() text = 'Attach Document';
       /** Name used in form which will be sent in HTTP request. */
   @Input() param = 'file';
   /** Target URL for file uploading. */
-  @Input() target = 'https://localhost:44388/api/certificate/upload';
+  @Input() target = 'api/certificate/upload';
   /** File extension that accepted, same as 'accept' of <input type="file" />. By the default, it's set to 'image/*'. */
   @Input() accept = 'image/*';
   /** Allow you to add handler after its completion. Bubble up response text from remote. */
@@ -34,12 +34,12 @@ import { of } from 'rxjs/observable/of';
   private files: Array<FileUploadModel> = [];
 
       constructor(private _http: HttpClient, @Inject('BASE_URL') baseUrl: string, private route: ActivatedRoute){
-        _http.get<CustomerViewModel[]>('https://localhost:44388/api/certificate/customers').subscribe(result => {
+        _http.get<CustomerViewModel[]>('api/certificate/customers').subscribe(result => {
 
           this.customers = result;
         }, error => console.log(error)); 
 
-        _http.get<ShipViewModel[]>('https://localhost:44388/api/certificate/ships').subscribe(result => {
+        _http.get<ShipViewModel[]>('api/certificate/ships').subscribe(result => {
           this.ships = result;
         }, error => console.log(error)); 
 
@@ -73,12 +73,25 @@ import { of } from 'rxjs/observable/of';
         });
       }
 
+      private createDateFormat(dateValue : Date) : string {
+var day = dateValue.getDate();       // yields date
+var month = dateValue.getMonth() + 1;    // yields month (add one as '.getMonth()' is zero indexed)
+var year = dateValue.getFullYear();  // yields year
+var hour = dateValue.getHours();     // yields hours 
+var minute = dateValue.getMinutes(); // yields minutes
+var second = dateValue.getSeconds(); // yields seconds
+
+// After this construct a string with the above results as below
+var time = day + "/" + month + "/" + year;
+return time;
+      }
+
       private uploadFile(file: FileUploadModel) {
         const fd = new FormData();
         fd.append("CustomerIdentifier",this.selectedCustomer.id);
         fd.append("VesselIdentifier",this.selectedShip.id);
-        fd.append("StartDate",this.selectedStartDate);
-        fd.append("EndDate",this.selectedEndDate);
+        fd.append("StartDate",this.createDateFormat(this.selectedStartDate));
+        fd.append("EndDate",this.createDateFormat(this.selectedEndDate));
         fd.append(this.param, file.data);
 
         const req = new HttpRequest('POST', this.target, fd, {

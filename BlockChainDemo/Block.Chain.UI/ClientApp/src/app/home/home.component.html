@@ -3,11 +3,9 @@
   <div class="jumbotron">
     <div class="container">
       <h2 class="icon">
-          <mat-icon [inline]="true">account_circle</mat-icon>
-          <p>{{currentUser}}</p>
+          <a mat-icon-button class="small" (click)="test()"><mat-icon>account_circle</mat-icon></a>
       </h2>
-      <h1 class="display-3">BlockChain Api Demo</h1>
-      <p> BlockChain Api Demo</p>
+      <h1 class="display-3">Block Chain Api Demo</h1>
       <div class="is-grouped">
           <button style="margin-right: 10px" mat-raised-button color="primary" (click)="createCertificate()">Create Certificate</button>
           <button style="margin-right: 10px" mat-raised-button (click)="navigateToAllTransactions()">View Ledger Transactions

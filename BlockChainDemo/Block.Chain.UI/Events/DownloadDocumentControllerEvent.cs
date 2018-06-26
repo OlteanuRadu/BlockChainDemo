@@ -6,4 +6,9 @@ namespace BlockchainUI.Events
     {
 
     }
+
+    public class ValidateCertificateControllerEvent<T> : WpfCompositeEvent<T>
+    {
+
+    }
 }

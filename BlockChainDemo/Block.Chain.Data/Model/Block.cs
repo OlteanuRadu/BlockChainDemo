@@ -1,9 +1,7 @@
 ﻿using Blockchain.Data.Entities;
 using Blockchain.Data.Utils;
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace Blockchain.Data.Model
 {
@@ -15,6 +13,10 @@ namespace Blockchain.Data.Model
         public string BlockType { get; set; }
         [DataMember]
         public DateTime Created { get; set; } = DateTime.Now;
+        [DataMember]
+        public string From { get; set; }
+        [DataMember]
+        public string To { get; set; }
         public BlockData Data { get; set; }
     }
 }

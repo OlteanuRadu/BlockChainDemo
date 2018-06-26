@@ -21,14 +21,14 @@ export class FetchDataComponent {
     this.route.queryParams.subscribe(_ => {
       if (_.username != undefined) {
         this.Title = "My Certificates";
-        http.get<CertificateModel[]>('https://localhost:44388/api/certificate/'+_.username).subscribe(result => {
+        http.get<CertificateModel[]>('api/certificate/'+_.username).subscribe(result => {
           this.forecasts = result;
           this.isBusy= false;
         }, error => console.error(error)); 
       }
       else {
         this.Title = "All Certificates";
-        http.get<CertificateModel[]>('https://localhost:44388/api/certificate/').subscribe(result => {
+        http.get<CertificateModel[]>('api/certificate/').subscribe(result => {
            this.forecasts = result;
            this.isBusy = false;
          }, error => console.error(error));
@@ -39,7 +39,7 @@ export class FetchDataComponent {
   public getCertificateById = (selectedItem: CertificateModel) => {
 
     var item = {"CustomerIdentifier": selectedItem.customerIdentifier, "VesselIdentifier": selectedItem.vesselIdentifier};
-    var win = window.open("https://localhost:44388/api/certificate/download/" +selectedItem.customerIdentifier);
+    var win = window.open("api/certificate/download/" +selectedItem.customerIdentifier);
     win.focus();
   }
 }
